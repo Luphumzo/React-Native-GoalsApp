@@ -4,16 +4,23 @@ import GoalItem from "./components/GoalItem";
 import GoalInput from "./components/GoalInput";
 interface ICourseGoal {
   text: string;
-  key: string;
+  id: string;
 }
 export default function App() {
   const [courseGoals, setCourseGoals] = useState<any[]>([]);
 
   function addGoalHandler(enteredGoalText: string) {
+    const randomId = Math.random();
     setCourseGoals((currentCourseGoals) => [
       ...currentCourseGoals,
-      { text: enteredGoalText, key: Math.random.toString() },
+      { text: enteredGoalText, id: randomId },
     ]);
+  }
+
+  function deleteGoalHandler(id: string) {
+    setCourseGoals((currentCourseGoals): ICourseGoal[] => {
+      return currentCourseGoals.filter((goal: ICourseGoal) => goal.id !== id);
+    });
   }
 
   return (
@@ -23,9 +30,15 @@ export default function App() {
         <FlatList
           data={courseGoals}
           renderItem={({ item }: { item: ICourseGoal }) => {
-            return <GoalItem text={item.text} />;
+            return (
+              <GoalItem
+                text={item.text}
+                id={item.id}
+                onDeleteItem={deleteGoalHandler}
+              />
+            );
           }}
-          keyExtractor={(item, index) => item.key}
+          keyExtractor={(item, index) => item.id}
         />
       </View>
     </View>
